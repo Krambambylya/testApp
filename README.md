@@ -62,3 +62,13 @@ API and image URLs are defined in `src/shared/config/env.ts`.
 ## AI Development
 
 This project was built with Cursor AI using rules from `.cursorrules`.
+
+### Agent chat history
+
+The full conversation with the AI agent is exported to [`agentChatHistory.md`](./agentChatHistory.md) in the project root. It includes:
+
+- all user prompts and assistant responses in chronological order
+- implementation plans, architecture decisions, and troubleshooting notes
+- a table of contents for quick navigation
+
+This file is provided as part of the test task requirements (AI-only approach: prompts, rules, and chat export).
