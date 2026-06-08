@@ -1,0 +1,86 @@
+# React Native + FSD + Redux Toolkit Rules
+
+## Core Principles
+
+- Type-safe TypeScript, strict mode, no `any`
+- Functional components + hooks only
+- **FSD architecture** (see below)
+- **Redux Toolkit + RTK Query** for state & data (NO Zustand)
+- Performance: memo, FlatList optimizations, avoid inline functions
+
+## FSD Rules (mandatory)
+
+src/
+├── app/ # entry, store, navigation
+├── pages/ # full screens
+├── features/ # user scenarios (auth, cart)
+├── entities/ # business models (User, Product)
+├── widgets/ # reusable blocks (Header, Card)
+└── shared/ # UI kit, helpers, API
+
+**Dependency direction:**  
+`app → pages → features → entities → shared`  
+(never import from higher layer into lower)
+
+**Slice structure:**
+slice/
+├── ui/ # components only
+├── model/ # Redux slice, selectors
+├── api/ # RTK Query endpoints
+├── lib/ # helpers
+└── index.ts # public exports only
+
+## Redux Toolkit + RTK Query
+
+- Store in `app/store.ts` – `configureStore`, add `api.reducerPath` & middleware
+- Create API slices with `createApi`, auto‑generate hooks
+- Example:
+
+```ts
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.example.com/' }),
+  endpoints: (builder) => ({
+    getUser: builder.query<User, string>({ query: (id) => `users/${id}` }),
+  }),
+});
+
+Use generated hooks (useGetUserQuery) in UI.
+
+
+TypeScript & Naming
+camelCase for vars/functions, PascalCase for components
+Directory names: kebab-case
+
+Performance Essentials
+React.memo for static props
+
+useCallback/useMemo for heavy work
+
+FlatList: removeClippedSubviews, maxToRenderPerBatch, getItemLayout
+
+No inline functions in renderItem or event handlers
+
+
+UI & Styling
+StyleSheet.create() only
+Responsive: useWindowDimensions, flex
+Images: react-native-fast-image
+
+
+What NOT to do
+❌ Expo modules
+❌ Zustand, MobX, plain Context for global state
+❌ Cross‑slice direct imports (use index.ts)
+❌ Business logic inside UI components
+
+
+Minimal folder example
+src/
+├── app/store.ts
+├── features/auth/{ui,model,api,index.ts}
+├── entities/user/{model,index.ts}
+└── shared/ui/button/
+
+Always: UI‑logic separation, RTK Query for API, follow FSD dependency rules.
+```
