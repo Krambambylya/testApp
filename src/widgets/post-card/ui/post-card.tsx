@@ -2,7 +2,8 @@ import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-import type { Post } from '../../../entities/post';
+import type { Post } from '@/entities/post';
+import { colors, spacing } from '@/shared/theme';
 
 type PostCardProps = {
   post: Post;
@@ -15,20 +16,22 @@ export const PostCard = React.memo(function PostCard({
   isFavorite,
   onPress,
 }: PostCardProps) {
-
   const handlePress = useCallback(() => {
     onPress(post.id);
   }, [onPress, post.id]);
 
-  console.log('PostCard rendered', post.thumbnailUrl);
   return (
     <Pressable
       onPress={handlePress}
-      style={[styles.card, isFavorite && styles.cardFavorite]}>
+      style={[styles.card, isFavorite && styles.cardFavorite]}
+      accessibilityRole="button"
+      accessibilityLabel={`Open post ${post.title}`}
+      accessibilityState={{ selected: isFavorite }}>
       <FastImage
         source={{ uri: post.thumbnailUrl, priority: FastImage.priority.normal }}
         style={styles.thumbnail}
         resizeMode={FastImage.resizeMode.cover}
+        accessibilityLabel={`Thumbnail for ${post.title}`}
       />
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={2}>
@@ -47,23 +50,23 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 12,
-    marginHorizontal: 16,
+    padding: spacing.md,
+    marginHorizontal: spacing.lg,
     marginVertical: 6,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: colors.border,
   },
   cardFavorite: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#2563eb',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.borderActive,
   },
   thumbnail: {
     width: 32,
     height: 32,
     borderRadius: 6,
-    marginRight: 12,
+    marginRight: spacing.md,
   },
   content: {
     flex: 1,
@@ -71,19 +74,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#0f172a',
-    marginBottom: 4,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
   },
   body: {
     fontSize: 14,
-    color: '#64748b',
+    color: colors.textMuted,
     lineHeight: 20,
   },
   badge: {
-    marginTop: 8,
+    marginTop: spacing.sm,
     fontSize: 12,
     fontWeight: '700',
-    color: '#2563eb',
+    color: colors.primary,
     textTransform: 'uppercase',
   },
 });

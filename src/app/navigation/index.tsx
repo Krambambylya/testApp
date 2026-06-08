@@ -2,9 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
-import { DetailsScreen } from '../../pages/details-screen';
-import { PostsScreen } from '../../pages/posts-screen';
-import type { RootStackParamList } from './types';
+import { DetailsScreen } from '@/pages/details-screen';
+import { PostsScreen } from '@/pages/posts-screen';
+import type { RootStackParamList } from '@/shared/config/navigation/types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

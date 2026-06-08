@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { colors, spacing } from '@/shared/theme';
+
 type ErrorViewProps = {
   message: string;
   onRetry?: () => void;
@@ -18,7 +20,11 @@ export const ErrorView = React.memo(function ErrorView({
     <View style={styles.container}>
       <Text style={styles.message}>{message}</Text>
       {onRetry ? (
-        <Pressable onPress={handleRetry} style={styles.button}>
+        <Pressable
+          onPress={handleRetry}
+          style={styles.button}
+          accessibilityRole="button"
+          accessibilityLabel="Retry">
           <Text style={styles.buttonText}>Retry</Text>
         </Pressable>
       ) : null}
@@ -31,23 +37,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#f8fafc',
+    padding: spacing.xxl,
+    backgroundColor: colors.background,
   },
   message: {
     fontSize: 16,
-    color: '#334155',
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   button: {
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
     borderRadius: 8,
   },
   buttonText: {
-    color: '#ffffff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -1,11 +1,25 @@
+const path = require('path');
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
-const config = {};
+const projectRoot = __dirname;
+const srcPath = path.resolve(projectRoot, 'src');
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+/**
+ * Metro resolves imports before Babel transforms them.
+ * Custom resolver is required for `@/` path aliases.
+ */
+const config = {
+  resolver: {
+    resolveRequest: (context, moduleName, platform) => {
+      if (moduleName.startsWith('@/')) {
+        const aliasedPath = path.join(srcPath, moduleName.slice(2));
+
+        return context.resolveRequest(context, aliasedPath, platform);
+      }
+
+      return context.resolveRequest(context, moduleName, platform);
+    },
+  },
+};
+
+module.exports = mergeConfig(getDefaultConfig(projectRoot), config);

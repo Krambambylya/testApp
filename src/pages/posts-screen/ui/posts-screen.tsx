@@ -1,37 +1,37 @@
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNetInfo } from '@react-native-community/netinfo';
 import React, { useCallback, useMemo } from 'react';
 import { FlatList, ListRenderItem, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { RootStackParamList } from '../../../app/navigation/types';
-import {
-  selectFavoriteIds,
-  selectSortedPosts,
-  useGetPostsQuery,
-  type Post,
-} from '../../../entities/post';
-import { useAppSelector } from '../../../app/hooks';
-import { ErrorView } from '../../../shared/ui/error-view';
-import { Loader } from '../../../shared/ui/loader';
-import { PostCard } from '../../../widgets/post-card';
-
-const ITEM_HEIGHT = 108;
+import { useGetPostsQuery, type Post } from '@/entities/post';
+import { selectFavoriteIds, selectSortedPosts } from '@/features/favorites';
+import type { RootStackParamList } from '@/shared/config/navigation/types';
+import { useAppSelector } from '@/shared/lib/redux';
+import { colors, spacing } from '@/shared/theme';
+import { EmptyView } from '@/shared/ui/empty-view';
+import { ErrorView } from '@/shared/ui/error-view';
+import { Loader } from '@/shared/ui/loader';
+import { OfflineBanner } from '@/widgets/offline-banner';
+import { PostCard } from '@/widgets/post-card';
 
 type PostsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Posts'>;
 
 export const PostsScreen = React.memo(function PostsScreen() {
   const navigation = useNavigation<PostsNavigationProp>();
   const insets = useSafeAreaInsets();
-  const favoriteIds = useAppSelector(selectFavoriteIds);
+  const netInfo = useNetInfo();
   const sortedPosts = useAppSelector(selectSortedPosts);
 
-  const { isLoading, isError, refetch } = useGetPostsQuery(undefined, {
+  const { isLoading, isError, refetch, isFetching } = useGetPostsQuery(undefined, {
     refetchOnMountOrArgChange: false,
     refetchOnFocus: false,
     refetchOnReconnect: false,
   });
 
+  const isOffline = netInfo.isConnected === false;
+  const favoriteIds = useAppSelector(selectFavoriteIds);
   const favoriteIdSet = useMemo(() => new Set(favoriteIds), [favoriteIds]);
 
   const handlePostPress = useCallback(
@@ -58,15 +58,6 @@ export const PostsScreen = React.memo(function PostsScreen() {
 
   const keyExtractor = useCallback((item: Post) => String(item.id), []);
 
-  const getItemLayout = useCallback(
-    (_data: ArrayLike<Post> | null | undefined, index: number) => ({
-      length: ITEM_HEIGHT,
-      offset: ITEM_HEIGHT * index,
-      index,
-    }),
-    [],
-  );
-
   if (isLoading && sortedPosts.length === 0) {
     return <Loader />;
   }
@@ -77,14 +68,29 @@ export const PostsScreen = React.memo(function PostsScreen() {
     );
   }
 
+  if (!isLoading && !isFetching && sortedPosts.length === 0) {
+    return <EmptyView message="No posts available." />;
+  }
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <Text style={styles.header}>Posts</Text>
+      {isOffline ? (
+        <OfflineBanner message="You are offline. Showing saved posts." />
+      ) : null}
+      {isError && sortedPosts.length > 0 ? (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorBannerText}>
+            Could not refresh posts. Showing cached data.
+          </Text>
+        </View>
+      ) : null}
+      <Text style={styles.header} accessibilityRole="header">
+        Posts
+      </Text>
       <FlatList
         data={sortedPosts}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        getItemLayout={getItemLayout}
         removeClippedSubviews
         maxToRenderPerBatch={10}
         windowSize={10}
@@ -98,16 +104,27 @@ export const PostsScreen = React.memo(function PostsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: colors.background,
   },
   header: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#0f172a',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    color: colors.textPrimary,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.lg,
   },
   listContent: {
-    paddingBottom: 24,
+    paddingBottom: spacing.xxl,
+  },
+  errorBanner: {
+    backgroundColor: colors.errorBanner,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  errorBannerText: {
+    color: colors.errorText,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });

@@ -8,6 +8,8 @@ Mobile app for browsing posts with favorites. Built with React Native, TypeScrip
 - Post images enriched with [PlaceBeard](https://placebeard.it/) (32×32 list, 300×300 details)
 - Favorite toggle with favorites pinned to the top
 - Data and favorites persist between sessions via MMKV
+- Offline banner and cached data fallback
+- Error boundary for runtime crashes
 
 ## Requirements
 
@@ -18,26 +20,44 @@ Mobile app for browsing posts with favorites. Built with React Native, TypeScrip
 ## Setup & Run
 
 ```sh
-npm install && cd ios && bundle exec pod install && cd ..
+yarn install && cd ios && pod install && cd ..
+```
+
+Note: If you encounter an error related to MMKV (e.g., Unable to find a specification for react-native-mmkv), run pod install with the repo update flag:
+
+```sh
+cd ios && pod install --repo-update && cd ..
 ```
 
 ```sh
-npm run ios
+yarn run ios
 # or
-npm run android
+yarn run android
 ```
+
+## Quality checks
+
+```sh
+yarn run validate
+```
+
+Runs ESLint, TypeScript check, and Jest with coverage.
 
 ## Project Structure (FSD)
 
 ```
 src/
-├── app/           # store, MMKV persist, navigation, providers
-├── pages/         # PostsScreen, DetailsScreen
-├── features/      # toggle-favorite
-├── entities/      # post (API, selectors, favorites slice)
-├── widgets/       # PostCard
-└── shared/        # Loader, ErrorView
+├── app/              # store, persist, navigation, providers, error-boundary
+├── pages/            # PostsScreen, DetailsScreen
+├── features/         # favorites, toggle-favorite
+├── entities/         # post (API, enrich, selectors)
+├── widgets/          # PostCard, OfflineBanner
+└── shared/           # theme, config, redux hooks, UI kit
 ```
+
+## Configuration
+
+API and image URLs are defined in `src/shared/config/env.ts`.
 
 ## AI Development
 

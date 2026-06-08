@@ -6,20 +6,21 @@
 - Functional components + hooks only
 - **FSD architecture** (see below)
 - **Redux Toolkit + RTK Query** for state & data (NO Zustand)
+- **redux-persist + MMKV** for session persistence
 - Performance: memo, FlatList optimizations, avoid inline functions
 
 ## FSD Rules (mandatory)
 
 src/
-├── app/ # entry, store, navigation
+├── app/ # entry, store, navigation, providers, error-boundary
 ├── pages/ # full screens
-├── features/ # user scenarios (auth, cart)
-├── entities/ # business models (User, Product)
-├── widgets/ # reusable blocks (Header, Card)
-└── shared/ # UI kit, helpers, API
+├── features/ # user scenarios (favorites, toggle-favorite)
+├── entities/ # business models (post)
+├── widgets/ # reusable blocks (post-card, offline-banner)
+└── shared/ # UI kit, theme, config, helpers, redux hooks
 
 **Dependency direction:**  
-`app → pages → features → entities → shared`  
+`app → pages → widgets/features → entities → shared`  
 (never import from higher layer into lower)
 
 **Slice structure:**
@@ -30,57 +31,53 @@ slice/
 ├── lib/ # helpers
 └── index.ts # public exports only
 
+## Imports
+
+- Use path alias `@/` for `src/`
+- Cross-slice imports only through `index.ts`
+- Typed Redux hooks: `@/shared/lib/redux`
+- Env config: `@/shared/config/env`
+- Theme tokens: `@/shared/theme`
+
 ## Redux Toolkit + RTK Query
 
 - Store in `app/store.ts` – `configureStore`, add `api.reducerPath` & middleware
-- Create API slices with `createApi`, auto‑generate hooks
-- Example:
+- Root reducer in `app/model/root-reducer.ts`
+- Persist config in `app/persist-config.ts` with version + migrate
+- Create API slices with `createApi`, auto-generate hooks
+- Use generated hooks (useGetPostsQuery) in UI
 
-```ts
-export const api = createApi({
-  reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.example.com/' }),
-  endpoints: (builder) => ({
-    getUser: builder.query<User, string>({ query: (id) => `users/${id}` }),
-  }),
-});
+## TypeScript & Naming
 
-Use generated hooks (useGetUserQuery) in UI.
-
-
-TypeScript & Naming
 camelCase for vars/functions, PascalCase for components
 Directory names: kebab-case
 
-Performance Essentials
+## Performance Essentials
+
 React.memo for static props
-
 useCallback/useMemo for heavy work
-
-FlatList: removeClippedSubviews, maxToRenderPerBatch, getItemLayout
-
+FlatList: removeClippedSubviews, maxToRenderPerBatch
 No inline functions in renderItem or event handlers
+No getItemLayout unless item height is truly fixed
 
+## UI & Styling
 
-UI & Styling
 StyleSheet.create() only
+Use shared theme tokens (colors, spacing) — no hardcoded hex in components
 Responsive: useWindowDimensions, flex
 Images: react-native-fast-image
 
+## Logging
 
-What NOT to do
+No console.log in src/
+Use `shared/lib/logger.ts` (dev-only output)
+
+## What NOT to do
+
 ❌ Expo modules
 ❌ Zustand, MobX, plain Context for global state
-❌ Cross‑slice direct imports (use index.ts)
+❌ Cross-slice direct imports (use index.ts)
 ❌ Business logic inside UI components
+❌ AsyncStorage for persist (use MMKV)
 
-
-Minimal folder example
-src/
-├── app/store.ts
-├── features/auth/{ui,model,api,index.ts}
-├── entities/user/{model,index.ts}
-└── shared/ui/button/
-
-Always: UI‑logic separation, RTK Query for API, follow FSD dependency rules.
-```
+Always: UI-logic separation, RTK Query for API, follow FSD dependency rules.

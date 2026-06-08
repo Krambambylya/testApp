@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -10,20 +10,10 @@ import {
   persistStore,
 } from 'redux-persist';
 
-import { postApi } from '../entities/post/api/post-api';
-import { favoritesReducer } from '../entities/post/model/favorites-slice';
-import { reduxStorage } from './persist-storage';
+import { postApi } from '@/entities/post';
 
-const rootReducer = combineReducers({
-  [postApi.reducerPath]: postApi.reducer,
-  favorites: favoritesReducer,
-});
-
-const persistConfig = {
-  key: 'root',
-  storage: reduxStorage,
-  whitelist: [postApi.reducerPath, 'favorites'],
-};
+import { rootReducer } from './model/root-reducer';
+import { persistConfig } from './persist-config';
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -39,5 +29,4 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type { AppDispatch, RootState } from './model/root-reducer';

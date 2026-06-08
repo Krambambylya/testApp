@@ -1,9 +1,9 @@
+import { env } from '@/shared/config/env';
+
 import type { ApiPost, Post } from '../model/types';
 
-const PLACEBEARD_BASE_URL = 'https://placebeard.it';
-
 function buildPlacebeardUrl(width: number, height: number, seed: number): string {
-  return `${PLACEBEARD_BASE_URL}/${width}/${height + seed}/notag`;
+  return `${env.IMAGE_BASE_URL}/${width}/${height + seed}/notag`;
 }
 
 export function enrichPost(post: ApiPost): Post {

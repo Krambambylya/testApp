@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
-import { toggleFavorite, selectIsFavorite } from '../../../entities/post';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { selectIsFavorite, toggleFavorite } from '@/features/favorites';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/redux';
+import { colors, spacing } from '@/shared/theme';
 
 type FavoriteToggleButtonProps = {
   postId: number;
@@ -18,35 +19,38 @@ export const FavoriteToggleButton = React.memo(function FavoriteToggleButton({
     dispatch(toggleFavorite(postId));
   }, [dispatch, postId]);
 
+  const label = isFavorite ? 'Remove from favorites' : 'Add to favorites';
+
   return (
     <Pressable
       onPress={handlePress}
-      style={[styles.button, isFavorite && styles.buttonActive]}>
-      <Text style={[styles.text, isFavorite && styles.textActive]}>
-        {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-      </Text>
+      style={[styles.button, isFavorite && styles.buttonActive]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: isFavorite }}>
+      <Text style={[styles.text, isFavorite && styles.textActive]}>{label}</Text>
     </Pressable>
   );
 });
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 24,
-    backgroundColor: '#e2e8f0',
+    marginTop: spacing.xxl,
+    backgroundColor: colors.buttonMuted,
     paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingHorizontal: spacing.xl,
     borderRadius: 10,
     alignItems: 'center',
   },
   buttonActive: {
-    backgroundColor: '#2563eb',
+    backgroundColor: colors.primary,
   },
   text: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#0f172a',
+    color: colors.textPrimary,
   },
   textActive: {
-    color: '#ffffff',
+    color: colors.white,
   },
 });
