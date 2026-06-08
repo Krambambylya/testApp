@@ -14,9 +14,7 @@ import { Loader } from '@/shared/ui/loader';
 
 type DetailsScreenProps = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
-export const DetailsScreen = React.memo(function DetailsScreen({
-  route,
-}: DetailsScreenProps) {
+export function DetailsScreen({ route }: DetailsScreenProps) {
   const { postId } = route.params;
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -56,7 +54,7 @@ export const DetailsScreen = React.memo(function DetailsScreen({
       <FavoriteToggleButton postId={post.id} />
     </ScrollView>
   );
-});
+}
 
 function useMemoizedSelectPost(postId: number) {
   return React.useMemo(() => selectPostById(postId), [postId]);

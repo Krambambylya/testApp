@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, spacing } from '@/shared/theme';
@@ -8,10 +8,7 @@ type ErrorViewProps = {
   onRetry?: () => void;
 };
 
-export const ErrorView = React.memo(function ErrorView({
-  message,
-  onRetry,
-}: ErrorViewProps) {
+export function ErrorView({ message, onRetry }: ErrorViewProps) {
   const handleRetry = useCallback(() => {
     onRetry?.();
   }, [onRetry]);
@@ -30,7 +27,7 @@ export const ErrorView = React.memo(function ErrorView({
       ) : null}
     </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
   container: {

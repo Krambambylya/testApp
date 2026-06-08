@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
@@ -11,11 +11,7 @@ type PostCardProps = {
   onPress: (postId: number) => void;
 };
 
-export const PostCard = React.memo(function PostCard({
-  post,
-  isFavorite,
-  onPress,
-}: PostCardProps) {
+export function PostCard({ post, isFavorite, onPress }: PostCardProps) {
   const handlePress = useCallback(() => {
     onPress(post.id);
   }, [onPress, post.id]);
@@ -44,7 +40,7 @@ export const PostCard = React.memo(function PostCard({
       </View>
     </Pressable>
   );
-});
+}
 
 const styles = StyleSheet.create({
   card: {

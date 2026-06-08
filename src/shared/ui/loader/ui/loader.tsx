@@ -1,15 +1,14 @@
-import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { colors } from '@/shared/theme';
 
-export const Loader = React.memo(function Loader() {
+export function Loader() {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color={colors.primary} />
     </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
   container: {

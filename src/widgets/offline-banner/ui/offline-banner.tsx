@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors, spacing } from '@/shared/theme';
@@ -7,15 +6,13 @@ type OfflineBannerProps = {
   message: string;
 };
 
-export const OfflineBanner = React.memo(function OfflineBanner({
-  message,
-}: OfflineBannerProps) {
+export function OfflineBanner({ message }: OfflineBannerProps) {
   return (
     <View style={styles.container} accessibilityRole="alert">
       <Text style={styles.text}>{message}</Text>
     </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
   container: {

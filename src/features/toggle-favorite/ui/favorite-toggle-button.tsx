@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { selectIsFavorite, toggleFavorite } from '@/features/favorites';
@@ -9,9 +9,7 @@ type FavoriteToggleButtonProps = {
   postId: number;
 };
 
-export const FavoriteToggleButton = React.memo(function FavoriteToggleButton({
-  postId,
-}: FavoriteToggleButtonProps) {
+export function FavoriteToggleButton({ postId }: FavoriteToggleButtonProps) {
   const dispatch = useAppDispatch();
   const isFavorite = useAppSelector(selectIsFavorite(postId));
 
@@ -31,7 +29,7 @@ export const FavoriteToggleButton = React.memo(function FavoriteToggleButton({
       <Text style={[styles.text, isFavorite && styles.textActive]}>{label}</Text>
     </Pressable>
   );
-});
+}
 
 const styles = StyleSheet.create({
   button: {

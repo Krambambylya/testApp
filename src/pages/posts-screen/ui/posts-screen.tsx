@@ -18,7 +18,7 @@ import { PostCard } from '@/widgets/post-card';
 
 type PostsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Posts'>;
 
-export const PostsScreen = React.memo(function PostsScreen() {
+export function PostsScreen() {
   const navigation = useNavigation<PostsNavigationProp>();
   const insets = useSafeAreaInsets();
   const netInfo = useNetInfo();
@@ -99,7 +99,7 @@ export const PostsScreen = React.memo(function PostsScreen() {
       />
     </View>
   );
-});
+}
 
 const styles = StyleSheet.create({
   container: {
