@@ -5,11 +5,12 @@ Mobile app for browsing posts with favorites. Built with React Native, TypeScrip
 ## Features
 
 - Posts list from [JSONPlaceholder](https://jsonplaceholder.typicode.com/posts)
-- Post images enriched with [PlaceBeard](https://placebeard.it/) (32×32 list, 300×300 details)
 - Favorite toggle with favorites pinned to the top
 - Data and favorites persist between sessions via MMKV
 - Offline banner and cached data fallback
 - Error boundary for runtime crashes
+- Post images enriched with [PlaceBeard](https://placebeard.it/) (32×32 list, 300×300 details)
+  Note: `fakerjs` image generation is unavailable in the region due to sanctions, so PlaceBeard is used as a replacement.
 
 ## Requirements
 
