@@ -65,7 +65,7 @@ This project was built with Cursor AI using rules from `.cursorrules`.
 
 ### Agent chat history
 
-The full conversation with the AI agent is exported to [`agentChatHistory.md`](./agentChatHistory.md) in the project root. It includes:
+The full conversation with the AI agent is exported to [`AGENT_CHAT_HISTORY.md`](./AGENT_CHAT_HISTORY.md) in the project root. It includes:
 
 - all user prompts and assistant responses in chronological order
 - implementation plans, architecture decisions, and troubleshooting notes
